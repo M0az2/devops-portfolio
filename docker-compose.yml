@@ -1,0 +1,9 @@
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: devops-portfolio
+    ports:
+      - "8090:80"
+    restart: unless-stopped
