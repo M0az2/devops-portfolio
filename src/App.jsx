@@ -1,771 +1,1870 @@
-import { useState, useEffect } from "react";
-import { Github, ExternalLink, Mail, Linkedin, Menu, X, ArrowUp, Cloud, GitBranch, Activity, Server, Network } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Activity,
+  ArrowDown,
+  ArrowUp,
+  BriefcaseBusiness,
+  CheckCircle2,
+  ChevronRight,
+  Cloud,
+  Code2,
+  Container,
+  Database,
+  Download,
+  ExternalLink,
+  Github,
+  GitBranch,
+  GraduationCap,
+  Linkedin,
+  Mail,
+  Menu,
+  Moon,
+  MonitorCog,
+  Quote,
+  Send,
+  Server,
+  Sun,
+  Terminal,
+  X,
+} from "lucide-react";
+
+import { translateText } from "./translations";
+
+const EMAIL = "moaznaser117@gmail.com";
+
+const GITHUB = "https://github.com/M0az2";
+
+const LINKEDIN =
+  "https://www.linkedin.com/in/moaz-nasr-eldin-02b019294";
+
+const CV_FILE = "/Moaz_Nasr_CV.pdf";
 
 const PROJECTS = [
   {
-    name: "Cloud Monitoring Platform",
-    desc: "Grafana provisioning-as-code, 9 Prometheus alert rules, Flask webhook receiver, cAdvisor for container metrics, full GitHub Actions CI/CD.",
-    tags: ["Prometheus", "Grafana", "Flask", "Docker", "GitHub Actions"],
-    href: "https://github.com/M0az2/cloud-monitoring-platform",
+    title: "Cloud Monitoring Platform",
+    type: "Featured Project",
+    description:
+      "A production-style monitoring platform for containerized applications and infrastructure.",
+    problem:
+      "Application and infrastructure issues need centralized monitoring, alerting, and visibility.",
+    solution:
+      "Built a monitoring stack using Prometheus, Grafana, Alertmanager, cAdvisor, and a Flask webhook.",
+    role:
+      "Designed the monitoring architecture, configured dashboards and alert rules, and automated deployment.",
+    result:
+      "Created a reusable observability platform with infrastructure-as-code style configuration and automated CI/CD.",
+    technologies: [
+      "Prometheus",
+      "Grafana",
+      "Alertmanager",
+      "cAdvisor",
+      "Flask",
+      "Docker",
+      "GitHub Actions",
+    ],
+    github:
+      "https://github.com/M0az2/cloud-monitoring-platform",
   },
+
+
+
+
+
   {
-    name: "Ansible Infrastructure Automation",
-    desc: "Multi-server automation with Ansible: Nginx web server + MariaDB database deployment, Jinja2 templates, group variables, and full infrastructure-as-code.",
-    tags: ["Ansible", "Nginx", "MariaDB", "Jinja2", "Linux"],
-    href: "https://github.com/M0az2/ansible-infrastructure-automation",
+    title: "Ansible Web & Database Automation Lab",
+    type: "Practice Project",
+    description:
+      "An infrastructure automation lab for deploying and configuring web and database servers.",
+    problem:
+      "Manual server configuration is repetitive and difficult to reproduce.",
+    solution:
+      "Used Ansible to automate Linux server configuration, Nginx deployment, and MariaDB setup.",
+    role:
+      "Created Ansible inventory, playbooks, roles, and automated configuration workflows.",
+    result:
+      "Reduced repetitive configuration work and created a repeatable infrastructure setup.",
+    technologies: [
+      "Ansible",
+      "Linux",
+      "Nginx",
+      "MariaDB",
+      "Bash",
+    ],
+    github:
+      "https://github.com/M0az2/ansible-infrastructure-automation",
   },
+
+ {
+  title: "Node.js CI/CD Pipeline",
+  type: "DevOps Project",
+  description:
+    "A production-style Node.js application with PostgreSQL, Docker, automated testing, and a GitHub Actions CI/CD pipeline.",
+  problem:
+    "Manual testing and deployment processes can be inconsistent and time-consuming.",
+  solution:
+    "Implemented containerization, automated testing, and CI/CD workflows using Docker and GitHub Actions.",
+  role:
+    "Developed the application, configured PostgreSQL, containerized the services, implemented automated tests, and built the CI/CD pipeline.",
+  result:
+    "Created a reproducible application environment with automated testing and deployment workflows.",
+  technologies: [
+    "Node.js",
+    "PostgreSQL",
+    "Docker",
+    "GitHub Actions",
+    "Jest",
+  ],
+  github:
+    "https://github.com/M0az2/nodejs-cicd-pipeline",
+},
+
   {
-    name: "Terraform AWS VPC & EC2 Modules",
-    desc: "Reusable, modular AWS infrastructure with Terraform — dual VPC environments with EC2, public/private subnets, NAT Gateway, and security groups.",
-    tags: ["Terraform", "AWS", "VPC", "EC2", "IaC"],
-    href: "https://github.com/M0az2/terraform-aws-vpc-ec2-modules",
+    title: "AWS 3-Tier Application Infrastructure",
+    type: "Personal Project",
+    description:
+      "A production-style AWS architecture for a highly available three-tier application.",
+    problem:
+      "Applications need isolated networking, scalable compute, controlled traffic flow, and managed databases.",
+    solution:
+      "Designed a VPC with public and private subnets, ALB, Auto Scaling, RDS, S3, NAT, and Route 53.",
+    role:
+      "Designed and implemented the cloud infrastructure and networking architecture.",
+    result:
+      "Created a scalable AWS environment that simulates a production application deployment.",
+    technologies: [
+      "AWS",
+      "VPC",
+      "EC2",
+      "ALB",
+      "Auto Scaling",
+      "RDS",
+      "S3",
+      "Route 53",
+    ],
   },
+
+  
+
   {
-    name: "Node.js CI/CD Pipeline",
-    desc: "Production-ready Node.js + Express app with full GitHub Actions CI/CD, Docker containerization, Docker Compose, PostgreSQL backend, and Jest testing.",
-    tags: ["Node.js", "Docker", "GitHub Actions", "PostgreSQL", "Jest"],
-    href: "https://github.com/M0az2/nodejs-cicd-pipeline",
+    title: "Self-Healing Infrastructure",
+    type: "Practice Project",
+    description:
+      "An automated monitoring and recovery concept for infrastructure failures.",
+    problem:
+      "Infrastructure failures require fast detection and recovery.",
+    solution:
+      "Combined monitoring, alerting, and automation to detect failures and trigger recovery actions.",
+    role:
+      "Designed the monitoring and automated remediation workflow.",
+    result:
+      "Created a practical foundation for automated infrastructure recovery.",
+    technologies: [
+      "Prometheus",
+      "Grafana",
+      "Alertmanager",
+      "Automation",
+    ],
   },
 ];
 
-const SKILLS = [
-  { label: "DevOps & Automation", icon: GitBranch, desc: "Building automated pipelines and infrastructure-as-code to ensure reliable, repeatable deployments across environments.", items: ["Docker", "CI/CD Pipelines", "GitHub Actions", "Bash Scripting", "Git", "Automated Deployment", "Service Monitoring"] },
-  { label: "Cloud", icon: Cloud, desc: "Designing and deploying multi-tier cloud architectures on AWS with containerized workloads and proper network segmentation.", items: ["AWS (EC2, S3, VPC, IAM, CloudFront)", "3-Tier Architecture", "Containerization"] },
-  { label: "Operating Systems", icon: Server, desc: "Administering Linux and Windows Server environments for application hosting, virtualization, and infrastructure management.", items: ["Ubuntu", "Linux", "Windows Server", "Hyper-V", "VMware"] },
-  { label: "Networking", icon: Network, desc: "Configuring enterprise network infrastructure including routing protocols, security policies, and access control.", items: ["DNS/DHCP", "VLANs", "ACLs", "Firewall Configuration", "VPN", "OSPF", "EIGRP"] },
-  { label: "Soft Skills", icon: Activity, desc: "Applying analytical thinking, collaborating effectively in teams, and adapting quickly to new technologies.", items: ["Team Collaboration", "Problem Solving", "Time Management", "Technical Communication", "Adaptability"] },
+const SKILL_GROUPS = [
+  {
+    title: "Cloud",
+    icon: Cloud,
+    skills: [
+      "AWS",
+      "EC2",
+      "VPC",
+      "RDS",
+      "S3",
+      "IAM",
+      "Route 53",
+    ],
+  },
+
+  {
+    title: "DevOps",
+    icon: GitBranch,
+    skills: [
+      "CI/CD",
+      "GitHub Actions",
+      "Docker",
+      "Kubernetes",
+      "GitOps",
+      "Argo CD",
+    ],
+  },
+
+  {
+    title: "Infrastructure as Code",
+    icon: Server,
+    skills: [
+      "Terraform",
+      "Ansible",
+      "Infrastructure Automation",
+    ],
+  },
+
+  {
+    title: "Linux Administration",
+    icon: Terminal,
+    skills: [
+      "Ubuntu",
+      "Rocky Linux",
+      "Bash",
+      "Networking",
+    ],
+  },
+
+  {
+    title: "Monitoring & Observability",
+    icon: Activity,
+    skills: [
+      "Prometheus",
+      "Grafana",
+      "Alertmanager",
+      "cAdvisor",
+    ],
+  },
+
+  {
+    title: "Programming",
+    icon: Code2,
+    skills: [
+      "Python",
+      "C#",
+      ".NET",
+      "Node.js",
+      "Bash",
+    ],
+  },
+
+  {
+    title: "Databases",
+    icon: Database,
+    skills: [
+      "MySQL",
+      "PostgreSQL",
+      "SQL Server",
+      "MariaDB",
+    ],
+  },
 ];
 
 const EXPERIENCE = [
-  { role: "Cloud Services Training Program", org: "National Telecommunications Institute (NTI)", date: "Jul. 2025 – Sep. 2025 · Score: 97%", cert: "/certificates/Moaz Nasr-Eldin Mohamed Helmy.pdf", bullets: ["Built and deployed a 3-tier cloud architecture on AWS using EC2, S3, VPC, CloudFront, and IAM.", "Containerized workloads with Docker within VMware-backed lab environments.", "Set up Ubuntu Linux servers and wrote Bash scripts to automate environment setup."] },
-  { role: "HCIA-Security Certification Training", org: "NTI — Huawei Authorized Curriculum", date: "Aug. 2025 – Sep. 2025 · Score: 97%", cert: "/certificates/Moaz Nasr-Eldin Mohamed Helmy (1).pdf", bullets: ["Configured firewalls, VPN tunnels, and intrusion detection systems.", "Applied network security policies and risk management frameworks across simulated enterprise environments."] },
-  { role: "DevOps Foundations", org: "Sprints × Microsoft Summer Camp", date: "Jul. 2025 – Aug. 2025", cert: "/certificates/DevOps Foundations.pdf", bullets: ["Practiced CI/CD workflows using Git and GitHub Actions.", "Applied Continuous Integration, Continuous Delivery, and service monitoring within collaborative team sprints."] },
-  { role: "Volunteer Cloud Instructor", org: "IEEE Shorouk Academy Student Branch", date: "Academic Year", bullets: ["Delivered cloud fundamentals sessions to fellow engineering students, covering cloud architecture and DevOps practices."] },
-  { role: "Linux Unhatched", org: "Cisco Networking Academy", date: "Jul. 2025", cert: "/certificates/LinuxUnhatchedUpdate20260914-20-r4pxgk.pdf", bullets: ["Completed Linux CLI operations, file management, and system administration fundamentals."] },
-  { role: "McKinsey Forward", org: "McKinsey.org", date: "Jul. 2025", cert: "/certificates/Forward20260914-20-ha8kdo.pdf", bullets: ["Developed practical skills in McKinsey's problem-solving approach, effective communication, and a foundational digital toolkit for the future of work."] },
-  { role: "CCNA — Routing, Switching & Network Security", org: "Self-Study, Cisco Official Curriculum & Packet Tracer Labs", date: "", bullets: ["Configured Cisco routers and switches via CLI.", "Implemented OSPF, EIGRP, VLAN segmentation, ACLs, and subnetting across simulated enterprise networks."] },
+  {
+    role: "Cloud Instructor",
+    organization: "IEEE SH.A",
+    challenge:
+      "Deliver practical cloud training for students with different technical backgrounds.",
+    action:
+      "Designed and delivered hands-on sessions covering cloud computing, AWS, IAM, networking, compute, storage, databases, and cloud architecture.",
+    result:
+      "Helped participants build and understand a complete 3-Tier Cloud Application through practical labs.",
+  },
+];
+
+const TRAINING = [
+  {
+    title: "Cloud Services Management and Operation",
+    organization: "NTI",
+    file: "/certificates/Moaz Nasr-Eldin Mohamed Helmy.pdf",
+    score: "97%",
+  },
+
+  {
+    title: "HCIA-Security",
+    organization: "NTI",
+    file: "/certificates/Moaz Nasr-Eldin Mohamed Helmy (1).pdf",
+    score: "97%",
+  },
+
+  {
+    title: "DevOps Foundations",
+    organization: "Sprints × Microsoft",
+    file: "/certificates/DevOps Foundations.pdf",
+  },
+
+  {
+    title: "Linux Unhatched",
+    organization: "Cisco Networking Academy",
+    file: "/certificates/LinuxUnhatchedUpdate20260914-20-r4pxgk.pdf",
+  },
+
+  {
+    title: "McKinsey Forward",
+    organization: "McKinsey",
+    file: "/certificates/Forward20260914-20-ha8kdo.pdf",
+  },
 ];
 
 const SERVICES = [
-  { icon: GitBranch, title: "CI/CD Pipeline Design", desc: "Automated build, test, and deployment pipelines using GitHub Actions, Docker, and cloud-native tools.", tags: ["GitHub Actions", "Docker", "Bash"] },
-  { icon: Cloud, title: "Cloud Infrastructure", desc: "AWS infrastructure design with VPC networking, EC2 deployment, IAM security, and containerized workloads.", tags: ["AWS", "Terraform", "Docker"] },
-  { icon: Activity, title: "Monitoring & Observability", desc: "Full-stack monitoring with Prometheus, Grafana dashboards, and automated alerting for production systems.", tags: ["Prometheus", "Grafana", "Alertmanager"] },
+  {
+    title: "DevOps & CI/CD",
+    icon: GitBranch,
+    description:
+      "Build reliable automated pipelines for testing, building, and deploying applications.",
+    problem:
+      "Manual deployments are slow, inconsistent, and difficult to maintain.",
+  },
+
+  {
+    title: "Cloud Infrastructure",
+    icon: Cloud,
+    description:
+      "Design and provision practical AWS infrastructure for modern applications.",
+    problem:
+      "Applications need scalable and organized cloud infrastructure.",
+  },
+
+  {
+    title: "Docker & Containerization",
+    icon: Container,
+    description:
+      "Containerize applications and create reproducible deployment environments.",
+    problem:
+      "Applications behave differently across development and deployment environments.",
+  },
+
+  {
+    title: "Infrastructure as Code",
+    icon: Server,
+    description:
+      "Automate infrastructure provisioning and configuration using Terraform and Ansible.",
+    problem:
+      "Manually configured infrastructure is difficult to reproduce and manage.",
+  },
+
+  {
+    title: "Monitoring & Observability",
+    icon: MonitorCog,
+    description:
+      "Implement metrics, dashboards, alerts, and infrastructure visibility.",
+    problem:
+      "Without observability, infrastructure and application problems are harder to detect.",
+  },
+
+  {
+    title: "Backend Development",
+    icon: Code2,
+    description:
+      "Build practical backend APIs and database-driven applications.",
+    problem:
+      "Modern applications need reliable backend services and database integration.",
+  },
 ];
 
-const STATUS_ITEMS = [
-  { name: "kubernetes", st: "running" },
-  { name: "terraform", st: "running" },
-  { name: "prometheus", st: "running" },
-  { name: "argocd", st: "synced" },
-  { name: "grafana", st: "running" },
+const PRICING_PLANS = [
+  {
+    label: "STARTER",
+    name: "Basic",
+    price: "$30–50",
+    features: [
+      "Linux / Server Setup",
+      "Docker Deployment",
+      "Basic CI/CD Pipeline",
+      "Up to 2 Revisions",
+      "3–5 Day Delivery",
+    ],
+    button: "Choose Plan",
+  },
+
+  {
+    label: "STANDARD",
+    name: "Pro",
+    price: "$80–150",
+    features: [
+      "AWS Infrastructure Setup",
+      "Terraform Infrastructure as Code",
+      "CI/CD Automation",
+      "Docker Deployment",
+      "Up to 4 Revisions",
+    ],
+    button: "Choose Plan",
+  },
+
+  {
+    label: "PREMIUM",
+    name: "Premium",
+    price: "$180–350",
+    popular: true,
+    features: [
+      "AWS Infrastructure",
+      "Terraform + Ansible",
+      "Kubernetes Deployment",
+      "CI/CD Pipeline",
+      "Prometheus + Grafana",
+      "Documentation & Handover",
+    ],
+    button: "Choose Plan",
+  },
+
+  {
+    label: "ENTERPRISE",
+    name: "Custom",
+    price: "Let's Talk",
+    features: [
+      "Custom Cloud Architecture",
+      "Kubernetes Infrastructure",
+      "Advanced CI/CD",
+      "Infrastructure Automation",
+      "Monitoring & Observability",
+      "Long-term Maintenance",
+    ],
+    button: "Choose Plan",
+  },
 ];
 
-export default function Portfolio() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+const ACHIEVEMENTS = [
+  {
+    title: "Cloud Instructor",
+    description:
+      "Delivered practical cloud sessions and hands-on labs through IEEE Shorouk Academy Student Branch.",
+    icon: GraduationCap,
+  },
 
-  const CMD = "$ ssh moaz@devops.local";
-  const [typed, setTyped] = useState("");
-  const [connected, setConnected] = useState(false);
+  {
+    title: "Hands-on Cloud Projects",
+    description:
+      "Built practical AWS infrastructure projects covering networking, compute, storage, databases, and deployment.",
+    icon: Cloud,
+  },
+
+  {
+    title: "DevOps Project Portfolio",
+    description:
+      "Built projects covering Docker, Kubernetes, CI/CD, Infrastructure as Code, monitoring, and automation.",
+    icon: Terminal,
+  },
+];
+
+const NAV_ITEMS = [
+  "Home",
+  "About",
+  "Education",
+  "Skills",
+  "Experience",
+  "Services",
+  "Projects",
+  "Achievements",
+  "Testimonials",
+  "Contact",
+];
+
+function App() {
+  const [language, setLanguage] = useState(
+    () =>
+      localStorage.getItem("portfolio-language") || "en"
+  );
+
+  const [theme, setTheme] = useState(
+    () =>
+      localStorage.getItem("portfolio-theme") || "dark"
+  );
+
+  const [mobileMenu, setMobileMenu] = useState(false);
+
+  const [showScrollTop, setShowScrollTop] =
+    useState(false);
+
+  const [selectedProject, setSelectedProject] =
+    useState(null);
+
+  const [showPricing, setShowPricing] =
+    useState(false);
+
+  const t = (text) => translateText(text, language);
 
   useEffect(() => {
-    let i = 0;
-    const t = setInterval(() => {
-      if (i <= CMD.length) { setTyped(CMD.slice(0, i)); i++; }
-      else { clearInterval(t); setTimeout(() => setConnected(true), 400); }
-    }, 52);
+    localStorage.setItem(
+      "portfolio-language",
+      language
+    );
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
-    }, { threshold: 0.1 });
-    setTimeout(() => document.querySelectorAll('.fade-section').forEach(el => observer.observe(el)), 100);
+    document.documentElement.lang = language;
 
-    const handleScroll = () => setShowScrollTop(window.scrollY > 400);
-    window.addEventListener("scroll", handleScroll);
+    document.documentElement.dir =
+      language === "ar" ? "rtl" : "ltr";
+  }, [language]);
 
-    return () => { clearInterval(t); observer.disconnect(); window.removeEventListener("scroll", handleScroll); };
+  useEffect(() => {
+    localStorage.setItem(
+      "portfolio-theme",
+      theme
+    );
+
+    document.documentElement.dataset.theme =
+      theme;
+  }, [theme]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+
+    window.addEventListener(
+      "scroll",
+      handleScroll
+    );
+
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+    };
   }, []);
 
-  const navLinks = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "education", label: "Education" },
-    { id: "skills", label: "Skills" },
-    { id: "experience", label: "Experience" },
-    { id: "projects", label: "Projects" },
-    { id: "contact", label: "Contact" },
-  ];
+  const scrollTo = (id) => {
+    setMobileMenu(false);
+
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
+  const toggleLanguage = () => {
+    setLanguage((current) =>
+      current === "en" ? "ar" : "en"
+    );
+  };
+
+  const toggleTheme = () => {
+    setTheme((current) =>
+      current === "dark" ? "light" : "dark"
+    );
+  };
 
   return (
     <div className="app">
-
-      {/* ─── Navbar ─── */}
-      <nav className="navbar">
-        <div className="nav-container">
-          <a href="#home" className="logo">moaz<span className="logo-accent">.dev</span></a>
-          <div className="nav-links">
-            {navLinks.map(l => (
-              <a key={l.id} href={`#${l.id}`} className="nav-link">{l.label}</a>
-            ))}
-          </div>
-          <div className="nav-actions">
-            <a href="https://github.com/M0az2" target="_blank" rel="noreferrer" className="btn btn-sm">
-              <Github size={14} /> GitHub
-            </a>
-            <button className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
-              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {isMenuOpen && (
-        <div className="mobile-menu">
-          {navLinks.map(l => (
-            <a key={l.id} href={`#${l.id}`} onClick={() => setIsMenuOpen(false)}>{l.label}</a>
-          ))}
-        </div>
-      )}
+      <Navbar
+        mobileMenu={mobileMenu}
+        setMobileMenu={setMobileMenu}
+        toggleLanguage={toggleLanguage}
+        toggleTheme={toggleTheme}
+        theme={theme}
+        scrollTo={scrollTo}
+        t={t}
+      />
 
       <main>
-        {/* ─── Hero ─── */}
-        <section id="home" className="hero">
-          <div className="hero-bg" />
-          <div className="hero-container">
+        {/* HOME */}
+        <section
+          id="home"
+          className="hero section"
+        >
+          <div className="container hero-grid">
             <div className="hero-content">
-              <span className="welcome-badge">WELCOME TO MY WORLD</span>
-              <h2 className="greeting">Hi, I'm</h2>
-              <h1 className="hero-name">Moaz Nasr-Eldin</h1>
-              <h2 className="hero-title-animated">
-                {"DevOps & Cloud Engineer".split("").map((ch, i) => (
-                  <span key={i} className="title-letter" style={{ animationDelay: `${i * 0.05}s` }}>
-                    {ch === " " ? "\u00A0" : ch}
-                  </span>
-                ))}
-              </h2>
-              <p className="hero-summary">
-                Third-year Computer Science student at El-Shorouk Academy. Cloud Instructor at IEEE Shorouk Branch. Building CI/CD pipelines, cloud infrastructure, and containerized deployments on AWS.
+              <span className="eyebrow">
+                {t("WELCOME TO MY WORLD")}
+              </span>
+
+              <p className="hero-intro">
+                {t("HELLO, I'M")}
               </p>
-              <div className="hero-buttons">
-                <a href="#projects" className="btn btn-primary">My Portfolio</a>
-                <a href="https://github.com/M0az2" target="_blank" rel="noreferrer" className="btn btn-outline">
-                  View GitHub <ExternalLink size={14} />
+
+              <h1>Moaz Nasr</h1>
+
+              <h2>
+                {t("DevOps & Cloud Engineer")}
+              </h2>
+
+              <p className="hero-description">
+                {t(
+                  "I build reliable cloud infrastructure, automate deployments, containerize applications, and create practical DevOps solutions."
+                )}
+              </p>
+
+              <div className="hero-actions">
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={() =>
+                    scrollTo("projects")
+                  }
+                >
+                  {t("View My Work")}
+                  <ChevronRight size={17} />
+                </button>
+
+                <a
+                  className="secondary-button cv-button"
+                  href={CV_FILE}
+                  download
+                >
+                  <Download size={17} />
+                  {t("DOWNLOAD CV")}
+                </a>
+
+                <a
+                  className="secondary-button"
+                  href={GITHUB}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Github size={17} />
+                  {t("View GitHub")}
                 </a>
               </div>
-              <div className="social-links">
-                <a href="https://github.com/M0az2" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={20} /></a>
-                <a href="https://www.linkedin.com/in/moaz-nasr-eldin-02b019294" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
-              </div>
+
+             
             </div>
-            <div className="hero-terminal">
-              <div className="terminal">
-                <div className="terminal-bar">
+
+            <div className="hero-visual">
+              <div className="terminal-window">
+                <div className="terminal-header">
                   <div className="terminal-dots">
-                    {["#FF5F57","#FEBC2E","#28C840"].map(c => (
-                      <span key={c} style={{ background: c }} className="dot" />
-                    ))}
+                    <span />
+                    <span />
+                    <span />
                   </div>
-                  <span className="terminal-title">terminal</span>
-                  <div style={{ width: 42 }} />
+
+                  <span>
+                    devops@cloud:~
+                  </span>
                 </div>
+
                 <div className="terminal-body">
-                  <div><span className="t-muted">{typed}</span>{!connected && <span className="t-cursor" />}</div>
-                  {connected && <div className="t-ok">✓ Connection established. Welcome.</div>}
-                  {connected && (
-                    <div className="t-status">
-                      {STATUS_ITEMS.map(({ name, st }) => (
-                        <div key={name} className="t-row">
-                          <span className="t-dot" />
-                          <span className="t-name">{name}</span>
-                          <span className="t-st">{st}</span>
-                        </div>
-                      ))}
-                    </div>
+                  <p>
+                    <span className="terminal-green">
+                      $ whoami
+                    </span>
+                  </p>
+
+                  <p>moaz-nasr</p>
+
+                  <p>&nbsp;</p>
+
+                  <p>
+                    <span className="terminal-green">
+                      $ role
+                    </span>
+                  </p>
+
+                  <p>
+                    DevOps & Cloud Engineer
+                  </p>
+
+                  <p>&nbsp;</p>
+
+                  <p>
+                    <span className="terminal-green">
+                      $ skills
+                    </span>
+                  </p>
+
+                  <p className="terminal-blue">
+                    AWS · Docker · Kubernetes
+                  </p>
+
+                  <p className="terminal-blue">
+                    Terraform · Ansible · CI/CD
+                  </p>
+
+                  <p className="terminal-blue">
+                    Linux · Monitoring
+                  </p>
+
+                  <p>&nbsp;</p>
+
+                  <p>
+                    <span className="terminal-green">
+                      $ status
+                    </span>
+                  </p>
+
+                  <p>
+                    building reliable systems...
+                  </p>
+                </div>
+              </div>
+
+              <div className="floating-card floating-card-one">
+                <Cloud size={15} />
+                AWS
+              </div>
+
+              <div className="floating-card floating-card-two">
+                <Container size={15} />
+                Docker
+              </div>
+
+              <div className="floating-card floating-card-three">
+                <GitBranch size={15} />
+                CI/CD
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="scroll-indicator"
+            onClick={() => scrollTo("about")}
+          >
+            {t("Scroll to explore")}
+            <ArrowDown size={14} />
+          </button>
+        </section>
+
+        {/* ABOUT */}
+        <section id="about" className="section">
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="ABOUT"
+              title="About Me"
+              description="Building practical cloud and DevOps solutions through hands-on engineering."
+            />
+
+            <div className="about-grid">
+              <article className="glass-card about-highlight">
+                <div className="card-icon">
+                  <Terminal size={21} />
+                </div>
+
+                <h3>
+                  {t(
+                    "Let's Build Something Reliable"
                   )}
+                </h3>
+
+                <p>
+                  {t(
+                    "I'm a Junior Cloud & DevOps Engineer focused on cloud infrastructure, automation, containerization, CI/CD, and reliable application deployment."
+                  )}
+                </p>
+
+                <div className="focus-list">
+                  <span>
+                    <CheckCircle2 size={16} />
+                    AWS infrastructure
+                  </span>
+
+                  <span>
+                    <CheckCircle2 size={16} />
+                    Docker & Kubernetes
+                  </span>
+
+                  <span>
+                    <CheckCircle2 size={16} />
+                    Terraform & Ansible
+                  </span>
+
+                  <span>
+                    <CheckCircle2 size={16} />
+                    CI/CD & Monitoring
+                  </span>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
+              </article>
 
-        {/* ─── About ─── */}
-        <section id="about" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <h2 className="section-title">About Me</h2>
-              <div className="section-line" />
-            </div>
-            <div className="about-card glass-card">
-              <div className="about-icon"><Server size={28} /></div>
-              <div className="about-text">
-                <h3 className="about-subtitle">Driven by Automation & Infrastructure</h3>
-                <p>I'm Moaz, a passionate DevOps & Cloud Engineer focused on building scalable infrastructure using AWS, Docker, and CI/CD pipelines. I have hands-on experience with Terraform, Ansible, Prometheus monitoring, and GitHub Actions automation.</p>
-                <p style={{marginTop: 12}}>Completed two government-certified training programs scoring 97%, gaining practical experience with cloud architecture, Linux administration, and network security.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Education ─── */}
-        <section id="education" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <h2 className="section-title">Education</h2>
-              <div className="section-line" />
-            </div>
-            <div className="edu-card glass-card">
-              <div className="edu-content">
-                <h3 className="edu-degree">Bachelor of Science in Computer Science</h3>
-                <p className="edu-university">El-Shorouk Academy, Cairo, Egypt</p>
-                <div className="edu-details">
-                  <span className="edu-detail">📅 Sep 2023 — Jun 2027</span>
-                  <span className="edu-detail">⭐ Grade: C+</span>
-                  <span className="edu-detail">📍 Cairo, Egypt</span>
+              <article className="glass-card">
+                <div className="card-icon">
+                  <Code2 size={21} />
                 </div>
-                <p className="edu-extra">Volunteer Cloud Instructor, IEEE Shrouk Academy Student Branch — delivered cloud fundamentals sessions to fellow students.</p>
-              </div>
+
+                <h3>
+                  {t("My Approach")}
+                </h3>
+
+                <p>
+                  {t(
+                    "I focus on practical solutions that are automated, reproducible, observable, and easy to maintain."
+                  )}
+                </p>
+              </article>
             </div>
           </div>
         </section>
 
-        {/* ─── Skills ─── */}
-        <section id="skills" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <h2 className="section-title">Technical Skills</h2>
-              <div className="section-line" />
+        {/* EDUCATION */}
+        <section id="education" className="section">
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="EDUCATION"
+              title="Education and continuous learning"
+              description="Academic foundation supported by practical technical training."
+            />
+
+            <div className="education-grid">
+              <article className="education-card">
+                <div className="education-icon">
+                  <GraduationCap size={24} />
+                </div>
+
+                <div className="education-content">
+                  <span className="education-period">
+                    {t("2023 — 2027")}
+                  </span>
+
+                  <h3>
+                    {t(
+                      "Bachelor of Computers and Information"
+                    )}
+                  </h3>
+
+                  <p className="education-major">
+                    {t("Computer Science")}
+                  </p>
+
+                  <p className="education-school">
+                    {t(
+                      "El Shorouk Academy, Cairo, Egypt"
+                    )}
+                  </p>
+
+                  <div className="education-meta">
+                    <span>
+                      {t("Grade: C+")}
+                    </span>
+
+                    <span>
+                      {t("Cairo, Egypt")}
+                    </span>
+                  </div>
+                </div>
+              </article>
             </div>
+          </div>
+        </section>
+
+        {/* SKILLS */}
+        <section id="skills" className="section">
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="SKILLS"
+              title="Technical Skills"
+              description="Tools and technologies I use across cloud infrastructure and DevOps projects."
+            />
+
             <div className="skills-grid">
-              {SKILLS.map(({ label, icon: Icon, desc, items }) => (
-                <div key={label} className="skill-card glass-card">
-                  <div className="skill-header">
-                    <div className="skill-icon-wrap"><Icon size={20} /></div>
-                    <h3 className="skill-label">{label}</h3>
-                  </div>
-                  <p className="skill-desc">{desc}</p>
-                  <div className="skill-tags">
-                    {items.map(t => <span key={t} className="skill-tag">{t}</span>)}
-                  </div>
-                </div>
-              ))}
+              {SKILL_GROUPS.map((group) => {
+                const Icon = group.icon;
+
+                return (
+                  <article
+                    className="skill-card"
+                    key={group.title}
+                  >
+                    <div className="card-icon">
+                      <Icon size={21} />
+                    </div>
+
+                    <h3>
+                      {t(group.title)}
+                    </h3>
+
+                    <div className="skill-tags">
+                      {group.skills.map(
+                        (skill) => (
+                          <span key={skill}>
+                            {skill}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
+            
+
+<div className="learning-box">
+  <div>
+    <span className="card-eyebrow">
+      {t("CURRENT FOCUS")}
+    </span>
+
+    <h3>{t("DevOps Trainee")}</h3>
+
+    <p>
+      {t("Digital Egypt Pioneers Initiative (DEPI) — Round 5")}
+    </p>
+
+    <span className="focus-date">
+      {t("July 2026 – Present")}
+    </span>
+
+    <div className="focus-details">
+      <div>
+        <strong>{t("CHALLENGE")}</strong>
+        <p>
+          {t(
+            "Developing practical DevOps skills by working with real-world infrastructure, deployment, and automation scenarios."
+          )}
+        </p>
+      </div>
+
+      <div>
+        <strong>{t("ACTION")}</strong>
+        <p>
+          {t(
+            "Automating infrastructure with Terraform and Ansible, containerizing applications with Docker and Kubernetes, and creating CI/CD pipelines with Jenkins and Git."
+          )}
+        </p>
+      </div>
+
+      <div>
+        <strong>{t("RESULT")}</strong>
+        <p>
+          {t(
+            "Gaining hands-on experience in infrastructure automation, Kubernetes, networking, security, and reliable application deployment through practical projects and labs."
+          )}
+        </p>
+      </div>
+    </div>
+
+    <div className="focus-technologies">
+      <span>Terraform</span>
+      <span>Ansible</span>
+      <span>Docker</span>
+      <span>Kubernetes</span>
+      <span>Jenkins</span>
+      <span>Git</span>
+      <span>AWS</span>
+    </div>
+  </div>
+
+</div>
           </div>
+
+
+
         </section>
 
-        {/* ─── Experience ─── */}
-        <section id="experience" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <h2 className="section-title">Training & Experience</h2>
-              <div className="section-line" />
-            </div>
-            <div className="timeline">
-              {EXPERIENCE.map((exp, i) => (
-                <div key={i} className="timeline-item glass-card">
-                  <div className="timeline-dot" />
-                  <div className="exp-header">
+        {/* TRAINING & EXPERIENCE */}
+        <section
+          id="experience"
+          className="section"
+        >
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="TRAINING & EXPERIENCE"
+              title="Training & Experience"
+              description="Practical training and hands-on experience built through continuous learning."
+            />
+
+            <div className="experience-list">
+              {EXPERIENCE.map((item) => (
+                <article
+                  className="experience-card"
+                  key={item.role}
+                >
+                  <div className="experience-header">
+                    <div className="card-icon">
+                      <BriefcaseBusiness size={21} />
+                    </div>
+
                     <div>
-                      <h3 className="exp-role">{exp.role}</h3>
-                      <h4 className="exp-company">{exp.org}</h4>
+                      <h3>
+                        {t(item.role)}
+                      </h3>
+
+                      <p>
+                        {t(item.organization)}
+                      </p>
                     </div>
-                    {exp.date && <span className="exp-date">{exp.date}</span>}
                   </div>
-                  <ul className="exp-bullets">
-                    {exp.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                  </ul>
-                  {exp.cert && (
-                    <a href={exp.cert} target="_blank" rel="noreferrer" className="btn-cert">
-                      <ExternalLink size={14} /> View Certificate
-                    </a>
-                  )}
-                </div>
+
+                  <div className="car-grid">
+                    <div>
+                      <span className="car-label">
+                        {t("Challenge")}
+                      </span>
+
+                      <p>
+                        {t(item.challenge)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="car-label">
+                        {t("Action")}
+                      </span>
+
+                      <p>
+                        {t(item.action)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="car-label">
+                        {t("Result")}
+                      </span>
+
+                      <p>
+                        {t(item.result)}
+                      </p>
+                    </div>
+                  </div>
+                </article>
               ))}
+
+              <div className="training-grid">
+                {TRAINING.map((item) => (
+                  <article
+                    className="training-card"
+                    key={item.title}
+                  >
+                    <a
+                      href={item.file}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="training-preview"
+                    >
+                      <iframe
+                        src={`${item.file}#page=1&toolbar=0&navpanes=0`}
+                        title={item.title}
+                      />
+                    </a>
+
+                    <div className="training-info">
+                      <span className="card-eyebrow">
+                        {item.organization}
+                      </span>
+
+                      <h3>
+                        {t(item.title)}
+                      </h3>
+
+                      {item.score && (
+                        <span className="training-score">
+                          {item.score}
+                        </span>
+                      )}
+
+                      <a
+                        href={item.file}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-button"
+                      >
+                        {t(
+                          "View Certificate"
+                        )}
+                        <ExternalLink size={15} />
+                      </a>
+                    </div>
+                  </article>
+                ))}
+
+                <article className="training-card instructor-card">
+                  <div className="training-placeholder">
+                    <BriefcaseBusiness size={30} />
+
+                    <span>
+                      {t("Experience")}
+                    </span>
+                  </div>
+
+                  <div className="training-info">
+                    <span className="card-eyebrow">
+                      IEEE SH.A
+                    </span>
+
+                    <h3>
+                      {t("Cloud Instructor")}
+                    </h3>
+
+                    <p>
+                      {t(
+                        "Practical cloud training and hands-on labs."
+                      )}
+                    </p>
+                  </div>
+                </article>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ─── Services ─── */}
-        <section id="services" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <span className="services-label">WHAT I OFFER</span>
-              <h2 className="section-title">My Services</h2>
-              <p className="services-subtitle">Practical solutions with clean infrastructure, scalable automation, and reliable delivery.</p>
-            </div>
+        {/* SERVICES */}
+        <section id="services" className="section">
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="SERVICES"
+              title="What I Can Help With"
+              description="Practical services for modern applications and cloud environments."
+            />
+
             <div className="services-grid">
-              {SERVICES.map((s, i) => (
-                <div key={i} className="service-card glass-card">
-                  <div className="service-icon-wrap"><s.icon size={24} /></div>
-                  <h3 className="service-title">{s.title}</h3>
-                  <p className="service-desc">{s.desc}</p>
-                  <div className="service-tags">
-                    {s.tags.map(t => <span key={t}>{t}</span>)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+              {SERVICES.map((service) => {
+                const Icon = service.icon;
 
-        {/* ─── Projects ─── */}
-        <section id="projects" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <h2 className="section-title">Featured Projects</h2>
-              <div className="section-line" />
-            </div>
-            <div className="projects-grid">
-              {PROJECTS.map((p, i) => (
-                <div key={i} className="project-card glass-card">
-                  <div className="project-content">
-                    <span className="project-pill">PROJECT {String(i + 1).padStart(2, '0')}</span>
-                    <h3 className="project-name">{p.name}</h3>
-                    <p className="project-desc">{p.desc}</p>
-                    <div className="project-tech">
-                      {p.tags.map(t => <span key={t}>{t}</span>)}
+                return (
+                  <article
+                    className="service-card"
+                    key={service.title}
+                  >
+                    <div className="card-icon">
+                      <Icon size={21} />
                     </div>
-                    <a href={p.href} target="_blank" rel="noreferrer" className="project-link">
-                      <Github size={16} /> View Repository <ExternalLink size={14} />
-                    </a>
-                  </div>
+
+                    <h3>
+                      {t(service.title)}
+                    </h3>
+
+                    <p>
+                      {t(service.description)}
+                    </p>
+
+                    <div className="service-problem">
+                      <span>
+                        {t("Problem")}
+                      </span>
+
+                      <p>
+                        {t(service.problem)}
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            <div className="pricing-toggle-wrapper">
+              <button
+                type="button"
+                className="pricing-toggle"
+                onClick={() =>
+                  setShowPricing(
+                    (value) => !value
+                  )
+                }
+              >
+                {showPricing
+                  ? t("HIDE PRICING PLANS")
+                  : t("VIEW PRICING PLANS")}
+              </button>
+            </div>
+
+            {showPricing && (
+              <section className="pricing-section">
+                <SectionHeading
+                  t={t}
+                  eyebrow="PRICING"
+                  title="Pricing Plans"
+                  description="Flexible plans tailored to your project's scope and budget."
+                />
+
+                <div className="pricing-grid">
+                  {PRICING_PLANS.map((plan) => (
+                    <article
+                      className={`pricing-card ${
+                        plan.popular
+                          ? "featured"
+                          : ""
+                      }`}
+                      key={plan.label}
+                    >
+                      {plan.popular && (
+                        <div className="popular-badge">
+                          {t("MOST POPULAR")}
+                        </div>
+                      )}
+
+                      <div className="pricing-label">
+                        {t(plan.label)}
+                      </div>
+
+                      <h3>
+                        {t(plan.name)}
+                      </h3>
+
+                      <div className="pricing-price">
+                        {plan.price}
+                      </div>
+
+                      <div className="pricing-features-wrapper">
+                        <ul className="pricing-features">
+                          {plan.features.map(
+                            (feature) => (
+                              <li key={feature}>
+                                {t(feature)}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="pricing-button"
+                        onClick={() =>
+                          scrollTo("contact")
+                        }
+                      >
+                        {t(plan.button)}
+                      </button>
+                    </article>
+                  ))}
                 </div>
+              </section>
+            )}
+          </div>
+        </section>
+
+        {/* PROJECTS */}
+        <section id="projects" className="section">
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="PROJECTS"
+              title="Selected Projects"
+              description="Practical projects covering cloud infrastructure, DevOps automation, Kubernetes, monitoring, and application deployment."
+            />
+
+            <div className="projects-grid">
+              {PROJECTS.map((project) => (
+                <article
+                  className="project-card"
+                  key={project.title}
+                >
+                  <div className="project-top">
+                    <span className="project-type">
+                      {t(project.type)}
+                    </span>
+
+                    <div className="project-icon">
+                      <MonitorCog size={18} />
+                    </div>
+                  </div>
+
+                  <h3>
+                    {t(project.title)}
+                  </h3>
+
+                  <p>
+                    {t(project.description)}
+                  </p>
+
+                  <div className="skill-tags project-tags">
+                    {project.technologies
+                      .slice(0, 5)
+                      .map((technology) => (
+                        <span
+                          key={technology}
+                        >
+                          {technology}
+                        </span>
+                      ))}
+                  </div>
+
+                  <div className="project-actions">
+                    <button
+                      type="button"
+                      className="text-button"
+                      onClick={() =>
+                        setSelectedProject(
+                          project
+                        )
+                      }
+                    >
+                      {t(
+                        "View Case Study"
+                      )}
+
+                      <ChevronRight
+                        size={15}
+                      />
+                    </button>
+
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="icon-button"
+                        aria-label="GitHub"
+                      >
+                        <Github size={16} />
+                      </a>
+                    )}
+                  </div>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ─── Contact ─── */}
-        <section id="contact" className="section fade-section">
-          <div className="section-inner">
-            <div className="section-header">
-              <h2 className="section-title">Let's Connect</h2>
-              <div className="section-line" />
-              <p className="services-subtitle">Open to opportunities, collaborations, or just a friendly chat.</p>
+        {/* ACHIEVEMENTS */}
+        <section
+          id="achievements"
+          className="section"
+        >
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="ACHIEVEMENTS"
+              title="Practical Achievements"
+              description="Practical achievements built through learning, teaching, and hands-on engineering work."
+            />
+
+            <div className="achievements-grid">
+              {ACHIEVEMENTS.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <article
+                    className="achievement-card"
+                    key={item.title}
+                  >
+                    <div className="card-icon">
+                      <Icon size={21} />
+                    </div>
+
+                    <h3>
+                      {t(item.title)}
+                    </h3>
+
+                    <p>
+                      {t(item.description)}
+                    </p>
+                  </article>
+                );
+              })}
             </div>
+          </div>
+        </section>
+
+        {/* TESTIMONIALS */}
+        <section
+          id="testimonials"
+          className="section"
+        >
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="TESTIMONIALS"
+              title="What People Say"
+              description="Professional feedback from future collaborations will appear here."
+            />
+
+            <div className="testimonial-placeholder">
+              <div className="card-icon">
+                <Quote size={21} />
+              </div>
+
+              <h3>
+                {t(
+                  "Testimonials Coming Soon"
+                )}
+              </h3>
+
+              <p>
+                {t(
+                  "As I complete more professional collaborations, this section will showcase real feedback and recommendations."
+                )}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section id="contact" className="section">
+          <div className="container">
+            <SectionHeading
+              t={t}
+              eyebrow="CONTACT"
+              title="Let's Work Together"
+              description="Have a project, internship opportunity, or technical collaboration in mind?"
+            />
+
             <div className="contact-grid">
-              {[
-                { icon: Mail, label: "Email", value: "moaznaser117@gmail.com", href: "mailto:moaznaser117@gmail.com" },
-                { icon: Linkedin, label: "LinkedIn", value: "moaz-nasr-eldin", href: "https://www.linkedin.com/in/moaz-nasr-eldin-02b019294" },
-                { icon: Github, label: "GitHub", value: "M0az2", href: "https://github.com/M0az2" },
-              ].map(c => (
-                <a key={c.label} href={c.href} target={c.label !== "Email" ? "_blank" : undefined} rel="noreferrer" className="contact-card glass-card">
-                  <c.icon size={24} className="contact-icon" />
+              <div className="contact-info">
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="contact-card"
+                >
+                  <div className="card-icon">
+                    <Mail size={19} />
+                  </div>
+
                   <div>
-                    <p className="contact-label">{c.label}</p>
-                    <p className="contact-value">{c.value}</p>
+                    <span>Email</span>
+
+                    <strong>
+                      {EMAIL}
+                    </strong>
                   </div>
                 </a>
-              ))}
+
+                <a
+                  href={GITHUB}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="contact-card"
+                >
+                  <div className="card-icon">
+                    <Github size={19} />
+                  </div>
+
+                  <div>
+                    <span>GitHub</span>
+
+                    <strong>
+                      M0az2
+                    </strong>
+                  </div>
+                </a>
+
+                <a
+                  href={LINKEDIN}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="contact-card"
+                >
+                  <div className="card-icon">
+                    <Linkedin size={19} />
+                  </div>
+
+                  <div>
+                    <span>LinkedIn</span>
+
+                    <strong>
+                      Moaz Nasr-Eldin
+                    </strong>
+                  </div>
+                </a>
+              </div>
+
+              <form
+                className="contact-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+
+                  const form =
+                    new FormData(
+                      event.currentTarget
+                    );
+
+                  const name =
+                    form.get("name");
+
+                  const email =
+                    form.get("email");
+
+                  const message =
+                    form.get("message");
+
+                  const subject =
+                    encodeURIComponent(
+                      `Portfolio Contact from ${name}`
+                    );
+
+                  const body =
+                    encodeURIComponent(
+                      `Name: ${name}\nEmail: ${email}\n\n${message}`
+                    );
+
+                  window.location.href =
+                    `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+                }}
+              >
+                <div className="form-row">
+                  <label>
+                    <span>
+                      {t("Name")}
+                    </span>
+
+                    <input
+                      name="name"
+                      required
+                      placeholder={t(
+                        "Your name"
+                      )}
+                    />
+                  </label>
+
+                  <label>
+                    <span>
+                      {t("Email")}
+                    </span>
+
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder={t(
+                        "Your email"
+                      )}
+                    />
+                  </label>
+                </div>
+
+                <label>
+                  <span>
+                    {t("Message")}
+                  </span>
+
+                  <textarea
+                    name="message"
+                    required
+                    placeholder={t(
+                      "Tell me about your project..."
+                    )}
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  className="primary-button"
+                >
+                  {t("Send Message")}
+                  <Send size={16} />
+                </button>
+              </form>
             </div>
           </div>
         </section>
       </main>
 
-      {/* ─── Footer ─── */}
+      {/* FOOTER */}
       <footer className="footer">
-        <div className="footer-inner">
+        <div className="container footer-inner">
           <div>
-            <span className="footer-logo">moaz<span className="logo-accent">.dev</span></span>
-            <span className="footer-copy">© {new Date().getFullYear()} · Cairo, Egypt</span>
+            <strong>
+              Moaz Nasr
+            </strong>
+
+            <p>
+              {t(
+                "DevOps & Cloud Engineer focused on reliable infrastructure, automation, and cloud technologies."
+              )}
+            </p>
           </div>
-          <div className="footer-links">
-            <a href="mailto:moaznaser117@gmail.com" aria-label="Email"><Mail size={16} /></a>
-            <a href="https://www.linkedin.com/in/moaz-nasr-eldin-02b019294" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={16} /></a>
-            <a href="https://github.com/M0az2" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={16} /></a>
+
+          <div className="footer-socials">
+            <a
+              href={GITHUB}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+            >
+              <Github size={17} />
+            </a>
+
+            <a
+              href={LINKEDIN}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+            >
+              <Linkedin size={17} />
+            </a>
+
+            <a
+              href={`mailto:${EMAIL}`}
+              aria-label="Email"
+            >
+              <Mail size={17} />
+            </a>
+          </div>
+
+          <div className="footer-bottom">
+            <span>
+              © {new Date().getFullYear()} Moaz Nasr
+            </span>
+
+            <span>
+              {t("Built with React & Vite")}
+            </span>
           </div>
         </div>
       </footer>
 
-      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className={`scroll-top ${showScrollTop ? 'show' : ''}`} aria-label="Scroll to top">
-        <ArrowUp size={18} />
-      </button>
+      {showScrollTop && (
+        <button
+          type="button"
+          className="scroll-top"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
+          aria-label="Scroll to top"
+        >
+          <ArrowUp size={18} />
+        </button>
+      )}
 
-      <style>{`
-/* ══════════════════════ RESET & BASE ══════════════════════ */
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px}
-body{overflow-x:hidden}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:8px}
-::-webkit-scrollbar-track{background:transparent}
-ul{list-style:none}
-
-.app{
-  background:#020617;
-  color:#e2e8f0;
-  min-height:100vh;
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  font-size:15px;
-  line-height:1.65;
-}
-
-/* ── Glass Card ── */
-.glass-card{
-  background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:16px;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  transition:all .3s cubic-bezier(.25,.8,.25,1);
-}
-.glass-card:hover{
-  background:rgba(255,255,255,0.06);
-  border-color:rgba(59,130,246,0.3);
-  transform:translateY(-4px);
-  box-shadow:0 10px 30px -10px rgba(59,130,246,0.15);
-}
-
-/* ── Buttons ── */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:12px 28px;border-radius:50px;font-weight:600;font-size:0.95rem;
-  cursor:pointer;transition:all .3s;border:2px solid transparent;text-decoration:none;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#60a5fa,#1e3a8a);
-  color:#fff;box-shadow:0 4px 15px rgba(59,130,246,0.4);
-}
-.btn-primary:hover{box-shadow:0 6px 25px rgba(59,130,246,0.6);transform:translateY(-2px)}
-.btn-outline{
-  background:transparent;border-color:#3b82f6;color:#3b82f6;
-}
-.btn-outline:hover{background:rgba(59,130,246,0.1);color:#fff}
-.btn-sm{
-  padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;
-  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);
-  color:#e2e8f0;text-decoration:none;
-}
-.btn-sm:hover{background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.4)}
-
-/* ── Fade animation ── */
-.fade-section{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
-.fade-section.is-visible{opacity:1;transform:none}
-
-/* ══════════════════════ NAVBAR ══════════════════════ */
-.navbar{
-  position:fixed;top:0;left:0;right:0;z-index:50;
-  background:rgba(2,6,23,0.85);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(255,255,255,0.05);
-}
-.nav-container{
-  max-width:1200px;margin:0 auto;padding:0 48px;height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.logo{
-  font-family:'Inter',sans-serif;font-size:18px;font-weight:800;
-  color:#f8fafc;text-decoration:none;letter-spacing:-0.5px;
-}
-.logo-accent{color:#3b82f6}
-.nav-links{display:flex;gap:28px;align-items:center}
-.nav-link{
-  color:#94a3b8;text-decoration:none;font-size:14px;font-weight:500;
-  transition:color .2s;position:relative;
-}
-.nav-link:hover{color:#f8fafc}
-.nav-link:hover::after{
-  content:"";position:absolute;bottom:-4px;left:0;right:0;height:2px;
-  background:#3b82f6;border-radius:1px;
-}
-.nav-actions{display:flex;align-items:center;gap:12px}
-.mobile-toggle{display:none;background:none;border:none;color:#e2e8f0;cursor:pointer}
-.mobile-menu{
-  position:fixed;top:64px;left:0;right:0;z-index:40;
-  background:rgba(2,6,23,0.95);backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(255,255,255,0.05);
-  padding:16px 24px;display:flex;flex-direction:column;gap:12px;
-}
-.mobile-menu a{color:#e2e8f0;text-decoration:none;font-size:16px;font-weight:500;padding:8px 0}
-
-/* ══════════════════════ HERO ══════════════════════ */
-.hero{
-  position:relative;overflow:hidden;padding-top:64px;
-  min-height:100vh;display:flex;align-items:center;
-}
-.hero-bg{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 60% 50% at 10% 50%, rgba(59,130,246,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 60% at 80% 20%, rgba(30,58,138,0.06) 0%, transparent 50%);
-  pointer-events:none;
-}
-.hero-container{
-  position:relative;z-index:1;
-  max-width:1200px;margin:0 auto;padding:60px 48px;width:100%;
-  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
-}
-.hero-content{display:flex;flex-direction:column}
-.welcome-badge{
-  display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.15em;
-  color:#60a5fa;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);
-  padding:6px 16px;border-radius:20px;margin-bottom:24px;width:fit-content;
-}
-.greeting{font-size:20px;color:#94a3b8;font-weight:400;margin-bottom:4px}
-.hero-name{
-  font-size:clamp(40px,5vw,64px);font-weight:800;line-height:1;letter-spacing:-2px;
-  color:#f8fafc;margin-bottom:12px;
-}
-.hero-title-animated{
-  font-size:clamp(20px,3vw,28px);font-weight:700;margin-bottom:20px;
-  display:flex;flex-wrap:wrap;
-}
-.title-letter{
-  display:inline-block;
-  background:linear-gradient(90deg,#3b82f6,#1e3a8a,#60a5fa,#3b82f6);
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  animation:gradientFlow 4s linear infinite, letterPop .4s ease both;
-}
-@keyframes gradientFlow{0%{background-position:0% center}100%{background-position:200% center}}
-@keyframes letterPop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.hero-summary{font-size:15px;color:#64748b;line-height:1.8;max-width:480px;margin-bottom:28px}
-.hero-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
-.social-links{display:flex;gap:16px}
-.social-links a{
-  color:#64748b;transition:all .2s;
-  width:40px;height:40px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
-}
-.social-links a:hover{color:#3b82f6;border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.08)}
-
-/* ── Terminal ── */
-.hero-terminal{display:flex;align-items:center;justify-content:center}
-.terminal{
-  background:#0f172a;border:1px solid rgba(255,255,255,0.06);
-  border-radius:16px;overflow:hidden;width:100%;
-  box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.03);
-}
-.terminal-bar{
-  background:rgba(255,255,255,0.03);padding:10px 16px;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(255,255,255,0.04);
-}
-.terminal-dots{display:flex;gap:6px}
-.dot{width:10px;height:10px;border-radius:50%;display:block}
-.terminal-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:#475569}
-.terminal-body{
-  font-family:'JetBrains Mono',monospace;font-size:13px;
-  padding:20px;min-height:180px;
-}
-.t-muted{color:#64748b}
-.t-cursor{display:inline-block;width:8px;height:16px;background:#3b82f6;margin-left:2px;vertical-align:text-bottom;animation:blink 1s step-end infinite}
-.t-ok{color:#34d399;margin-top:10px;animation:fadeIn .4s ease}
-.t-status{margin-top:14px;display:flex;flex-direction:column;gap:6px}
-.t-row{display:flex;align-items:center;gap:8px;color:#64748b}
-.t-dot{width:5px;height:5px;border-radius:50%;background:#34d399;flex-shrink:0}
-.t-name{min-width:90px}
-.t-st{color:#334155;font-size:11px}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-
-/* ══════════════════════ SECTIONS ══════════════════════ */
-.section{padding:100px 0}
-.section-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.section-header{text-align:center;margin-bottom:48px}
-.section-title{
-  font-size:32px;font-weight:800;color:#f8fafc;letter-spacing:-0.5px;margin-bottom:12px;
-}
-.section-line{
-  width:60px;height:3px;margin:0 auto;border-radius:2px;
-  background:linear-gradient(90deg,#60a5fa,#1e3a8a);
-  animation:linePulse 2s ease-in-out infinite;
-}
-@keyframes linePulse{0%,100%{width:60px;opacity:1}50%{width:80px;opacity:.7}}
-
-/* ── About ── */
-.about-card{padding:40px;display:flex;gap:28px;align-items:flex-start}
-.about-icon{
-  width:56px;height:56px;border-radius:14px;flex-shrink:0;
-  background:rgba(59,130,246,0.1);color:#60a5fa;
-  display:flex;align-items:center;justify-content:center;
-}
-.about-subtitle{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:12px}
-.about-text p{font-size:15px;color:#94a3b8;line-height:1.8}
-
-/* ── Education ── */
-.edu-card{padding:36px}
-.edu-degree{font-size:20px;font-weight:700;color:#f8fafc;margin-bottom:6px}
-.edu-university{font-size:15px;color:#60a5fa;margin-bottom:16px}
-.edu-details{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
-.edu-detail{font-size:13px;color:#94a3b8}
-.edu-extra{font-size:14px;color:#64748b;font-style:italic;border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;margin-top:8px}
-
-/* ── Skills ── */
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.skill-card{padding:28px}
-.skill-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.skill-icon-wrap{
-  width:42px;height:42px;border-radius:12px;
-  background:rgba(59,130,246,0.1);color:#60a5fa;
-  display:flex;align-items:center;justify-content:center;
-}
-.skill-label{font-size:16px;font-weight:700;color:#f8fafc}
-.skill-desc{font-size:13px;color:#94a3b8;line-height:1.7;margin-bottom:16px}
-.skill-tags{display:flex;flex-wrap:wrap;gap:6px}
-.skill-tag{
-  font-size:12px;font-weight:500;color:#60a5fa;
-  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.18);
-  padding:4px 12px;border-radius:6px;transition:all .2s;
-}
-.skill-tag:hover{background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.35)}
-
-/* ── Experience Timeline ── */
-.timeline{position:relative;padding-left:32px}
-.timeline::before{
-  content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;
-  background:linear-gradient(180deg,#3b82f6,rgba(59,130,246,0.1));
-}
-.timeline-item{
-  position:relative;padding:28px;margin-bottom:20px;
-  margin-left:12px;
-}
-.timeline-dot{
-  position:absolute;left:-33px;top:32px;
-  width:12px;height:12px;border-radius:50%;
-  background:#3b82f6;border:3px solid #020617;
-  box-shadow:0 0 0 3px rgba(59,130,246,0.3);
-}
-.exp-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap}
-.exp-role{font-size:17px;font-weight:700;color:#f8fafc;margin-bottom:4px}
-.exp-company{font-size:14px;color:#60a5fa;font-weight:500}
-.exp-date{
-  font-family:'JetBrains Mono',monospace;font-size:12px;
-  color:#94a3b8;white-space:nowrap;flex-shrink:0;
-  background:rgba(59,130,246,0.06);padding:4px 12px;border-radius:6px;
-}
-.exp-bullets{padding-left:18px;list-style:disc}
-.exp-bullets li{font-size:14px;color:#94a3b8;line-height:1.8;margin-bottom:4px}
-.exp-bullets li::marker{color:#3b82f6}
-.btn-cert{
-  display:inline-flex;align-items:center;gap:8px;margin-top:14px;
-  font-size:13px;font-weight:600;color:#60a5fa;text-decoration:none;
-  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);
-  padding:8px 18px;border-radius:8px;transition:all .25s;width:fit-content;
-}
-.btn-cert:hover{background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.4);transform:translateY(-1px)}
-
-/* ── Services ── */
-.services-label{
-  font-size:12px;font-weight:700;letter-spacing:0.15em;
-  color:#60a5fa;display:block;margin-bottom:8px;
-}
-.services-subtitle{font-size:15px;color:#64748b;max-width:500px;margin:12px auto 0}
-.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.service-card{padding:32px;text-align:center}
-.service-icon-wrap{
-  width:56px;height:56px;border-radius:14px;margin:0 auto 20px;
-  background:rgba(59,130,246,0.1);color:#60a5fa;
-  display:flex;align-items:center;justify-content:center;
-}
-.service-title{font-size:17px;font-weight:700;color:#f8fafc;margin-bottom:10px}
-.service-desc{font-size:13px;color:#94a3b8;line-height:1.7;margin-bottom:16px}
-.service-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.service-tags span{
-  font-size:12px;color:#60a5fa;
-  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.18);
-  padding:4px 12px;border-radius:6px;
-}
-
-/* ── Projects ── */
-.projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.project-card{overflow:hidden;position:relative}
-.project-card::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,transparent,#3b82f6,transparent);
-  opacity:0;transition:opacity .3s;
-}
-.project-card:hover::before{opacity:1}
-.project-content{padding:28px;display:flex;flex-direction:column;height:100%}
-.project-pill{
-  font-size:11px;font-weight:700;letter-spacing:0.1em;
-  color:#60a5fa;background:rgba(59,130,246,0.08);
-  padding:4px 12px;border-radius:12px;width:fit-content;margin-bottom:14px;
-}
-.project-name{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:10px;letter-spacing:-0.3px}
-.project-desc{font-size:13px;color:#94a3b8;line-height:1.75;margin-bottom:18px;flex-grow:1}
-.project-tech{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.project-tech span{
-  font-size:12px;color:#60a5fa;
-  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.18);
-  padding:4px 12px;border-radius:6px;
-}
-.project-link{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:14px;font-weight:600;color:#3b82f6;text-decoration:none;
-  transition:all .2s;
-}
-.project-link:hover{color:#60a5fa;gap:12px}
-
-/* ── Contact ── */
-.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.contact-card{
-  padding:28px;text-decoration:none;color:inherit;
-  display:flex;align-items:center;gap:16px;
-}
-.contact-icon{color:#64748b;transition:color .3s;flex-shrink:0}
-.contact-card:hover .contact-icon{color:#3b82f6}
-.contact-label{font-size:15px;font-weight:600;color:#f8fafc;margin-bottom:4px}
-.contact-value{font-size:13px;color:#94a3b8}
-
-/* ══════════════════════ FOOTER ══════════════════════ */
-.footer{border-top:1px solid rgba(255,255,255,0.04);padding:28px 0}
-.footer-inner{
-  max-width:1200px;margin:0 auto;padding:0 48px;
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
-}
-.footer-logo{font-size:16px;font-weight:800;color:#f8fafc;margin-right:16px}
-.footer-copy{font-size:12px;color:#475569}
-.footer-links{display:flex;gap:16px}
-.footer-links a{color:#475569;transition:color .2s}
-.footer-links a:hover{color:#3b82f6}
-
-/* ── Scroll Top ── */
-.scroll-top{
-  position:fixed;bottom:28px;right:28px;
-  width:44px;height:44px;border-radius:50%;
-  background:linear-gradient(135deg,#60a5fa,#1e3a8a);
-  border:none;color:#fff;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;visibility:hidden;transition:all .3s;z-index:100;
-  box-shadow:0 4px 16px rgba(59,130,246,0.3);
-}
-.scroll-top.show{opacity:1;visibility:visible}
-.scroll-top:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(59,130,246,0.5)}
-
-/* ══════════════════════ RESPONSIVE ══════════════════════ */
-@media(max-width:1024px){
-  .hero-container{grid-template-columns:1fr;gap:40px}
-  .hero-terminal{max-width:500px}
-  .nav-container,.section-inner,.footer-inner{padding-left:32px;padding-right:32px}
-  .services-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:768px){
-  .nav-links{display:none!important}
-  .btn-sm{display:none!important}
-  .mobile-toggle{display:block!important}
-  .hero-container{padding:40px 20px}
-  .projects-grid{grid-template-columns:1fr}
-  .services-grid{grid-template-columns:1fr}
-  .contact-grid{grid-template-columns:1fr}
-  .about-card{flex-direction:column}
-  .exp-header{flex-direction:column}
-  .nav-container,.section-inner,.footer-inner{padding-left:20px;padding-right:20px}
-  .section{padding:60px 0}
-  .skills-grid{grid-template-columns:1fr}
-}
-@media(max-width:480px){
-  .nav-container,.section-inner,.footer-inner{padding-left:16px;padding-right:16px}
-  .hero-name{font-size:clamp(32px,10vw,48px)!important}
-  .section{padding:48px 0}
-  .hero-buttons{flex-direction:column}
-  .hero-buttons .btn{width:100%;justify-content:center}
-  .timeline{padding-left:24px}
-  .timeline-item{margin-left:8px;padding:20px}
-  .timeline-dot{left:-25px}
-}
-      `}</style>
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() =>
+            setSelectedProject(null)
+          }
+          t={t}
+        />
+      )}
     </div>
   );
 }
+
+function Navbar({
+  mobileMenu,
+  setMobileMenu,
+  toggleLanguage,
+  toggleTheme,
+  theme,
+  scrollTo,
+  t,
+}) {
+  return (
+    <header className="navbar">
+      <div className="container navbar-inner">
+        <button
+          type="button"
+          className="brand"
+          onClick={() => {
+            scrollTo("home");
+            setMobileMenu(false);
+          }}
+          aria-label="Go to home"
+        >
+          <span className="brand-mark">
+            MN
+          </span>
+
+          <span className="brand-name">
+            Moaz Nasr
+          </span>
+        </button>
+
+        <nav
+          className={`nav-links ${
+            mobileMenu ? "open" : ""
+          }`}
+          aria-label="Main navigation"
+        >
+          {NAV_ITEMS.map((item) => (
+            <button
+              type="button"
+              key={item}
+              className="nav-link"
+              onClick={() => {
+                scrollTo(
+                  item.toLowerCase()
+                );
+                setMobileMenu(false);
+              }}
+            >
+              {t(item)}
+            </button>
+          ))}
+        </nav>
+
+        <div className="nav-actions">
+          <button
+            type="button"
+            className="icon-button language-button"
+            onClick={toggleLanguage}
+            aria-label="Change language"
+          >
+            {t("AR")}
+          </button>
+
+          <button
+            type="button"
+            className="icon-button"
+            onClick={toggleTheme}
+            aria-label="Change theme"
+          >
+            {theme === "dark" ? (
+              <Sun size={16} />
+            ) : (
+              <Moon size={16} />
+            )}
+          </button>
+
+          <button
+            type="button"
+            className="mobile-menu-button"
+            onClick={() =>
+              setMobileMenu(
+                (value) => !value
+              )
+            }
+            aria-label={
+              mobileMenu
+                ? "Close menu"
+                : "Open menu"
+            }
+            aria-expanded={mobileMenu}
+          >
+            {mobileMenu ? (
+              <X size={18} />
+            ) : (
+              <Menu size={18} />
+            )}
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+  t,
+}) {
+  return (
+    <div className="section-heading">
+      <span className="eyebrow">
+        {t(eyebrow)}
+      </span>
+
+      <h2>{t(title)}</h2>
+
+      <p>{t(description)}</p>
+    </div>
+  );
+}
+
+function ProjectModal({
+  project,
+  onClose,
+  t,
+}) {
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
+
+    document.body.style.overflow =
+      "hidden";
+
+    return () => {
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="modal-overlay"
+      onMouseDown={(event) => {
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
+          onClose();
+        }
+      }}
+    >
+      <article className="project-modal">
+        <button
+          type="button"
+          className="modal-close"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <X size={18} />
+        </button>
+
+        <span className="project-type">
+          {t(project.type)}
+        </span>
+
+        <h2>
+          {t(project.title)}
+        </h2>
+
+        <p className="modal-description">
+          {t(project.description)}
+        </p>
+
+        <div className="modal-grid">
+          <ModalBlock
+            title="Problem"
+            text={project.problem}
+            t={t}
+          />
+
+          <ModalBlock
+            title="Solution"
+            text={project.solution}
+            t={t}
+          />
+
+          <ModalBlock
+            title="My Role"
+            text={project.role}
+            t={t}
+          />
+
+          <ModalBlock
+            title="Result"
+            text={project.result}
+            t={t}
+          />
+        </div>
+
+        <div className="modal-technologies">
+          <span className="car-label">
+            {t("Technologies")}
+          </span>
+
+          <div className="skill-tags">
+            {project.technologies.map(
+              (technology) => (
+                <span key={technology}>
+                  {technology}
+                </span>
+              )
+            )}
+          </div>
+        </div>
+
+        {project.github && (
+          <div className="modal-github">
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noreferrer"
+              className="primary-button"
+            >
+              <Github size={17} />
+              {t("View on GitHub")}
+            </a>
+          </div>
+        )}
+      </article>
+    </div>
+  );
+}
+
+function ModalBlock({
+  title,
+  text,
+  t,
+}) {
+  return (
+    <div className="modal-block">
+      <span className="car-label">
+        {t(title)}
+      </span>
+
+      <p>{t(text)}</p>
+    </div>
+  );
+}
+
+export default App;
