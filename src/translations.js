@@ -213,14 +213,12 @@ export const TRANSLATIONS = {
   "Containerize applications and create reproducible deployment environments.":
     "تحويل التطبيقات إلى حاويات وإنشاء بيئات نشر قابلة لإعادة الاستخدام.",
 
-  "Infrastructure as Code":
-    "البنية التحتية ككود",
+ 
 
   "Automate infrastructure provisioning and configuration using Terraform and Ansible.":
     "أتمتة تجهيز وإعداد البنية التحتية باستخدام Terraform وAnsible.",
 
-  "Monitoring & Observability":
-    "المراقبة والرصد",
+ 
 
   "Implement metrics, dashboards, alerts, and infrastructure visibility.":
     "تنفيذ المقاييس ولوحات المعلومات والتنبيهات ومراقبة البنية التحتية.",

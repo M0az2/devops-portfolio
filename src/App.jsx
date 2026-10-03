@@ -23,7 +23,6 @@ import {
   Quote,
   Send,
   Server,
-  ShieldCheck,
   Sun,
   Terminal,
   X,
