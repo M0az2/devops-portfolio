@@ -478,6 +478,17 @@ export const TRANSLATIONS = {
   "My Role": "دوري",
 
   Technologies: "التقنيات",
+
+  // =========================
+  // Missing translations
+  // =========================
+
+  "DevOps Trainee": "متدرب DevOps",
+
+  "Digital Egypt Pioneers Initiative (DEPI) — Round 5":
+    "مبادرة رواد مصر الرقمية (DEPI) — الجولة الخامسة",
+
+  EDUCATION: "التعليم",
 };
 
 export function translateText(text, language) {
